@@ -93,7 +93,7 @@ const Modal = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, initialFocusRef]);
+  }, [isOpen, initialFocusRef, handleKeyDown]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {

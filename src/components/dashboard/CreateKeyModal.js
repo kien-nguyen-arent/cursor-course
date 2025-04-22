@@ -136,7 +136,7 @@ export default function CreateKeyModal({
         </div>
         
         <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '16px' }}>
-          * If the combined usage of all your keys exceeds your plan's limit, all requests will be rejected.
+          * If the combined usage of all your keys exceeds your plan&apos;s limit, all requests will be rejected.
         </p>
       </div>
       
