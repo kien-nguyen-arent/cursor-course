@@ -385,14 +385,14 @@ function DashboardContent() {
         <CreateKeyModal 
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          onSubmit={handleCreateKey}
+          onCreateKey={handleCreateKey}
         />
         
         <EditKeyModal 
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          onSubmit={handleSaveEdit}
-          apiKey={editKey}
+          onSaveEdit={handleSaveEdit}
+          keyData={editKey}
         />
       </div>
     </div>

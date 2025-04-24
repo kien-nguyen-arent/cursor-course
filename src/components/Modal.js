@@ -35,11 +35,12 @@ const Modal = ({
   }, [isOpen, hasBeenOpened]);
 
   // Handle clicking on the overlay to close the modal
-  const handleOverlayClick = (e) => {
+  const handleOverlayClick = useCallback((e) => {
+    // Only close if clicking directly on the overlay, not its children
     if (closeOnOverlayClick && e.target === overlayRef.current) {
       onClose();
     }
-  };
+  }, [closeOnOverlayClick, onClose]);
 
   // Handle keyboard events using useCallback
   const handleKeyDown = useCallback((e) => {
@@ -65,6 +66,11 @@ const Modal = ({
       }
     }
   }, [closeOnEsc, onClose]);
+
+  // Prevent container clicks from closing the modal
+  const handleContainerClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
 
   // Set up focus trap and key handlers
   useEffect(() => {
@@ -142,8 +148,9 @@ const Modal = ({
         aria-labelledby={title ? "modal-title" : undefined}
       >
         <div 
-          className={`modal-container ${sizeClass} ${positionClass}`} 
+          className={`modal-container ${sizeClass} ${positionClass}`}
           ref={modalRef}
+          onClick={handleContainerClick}
         >
           <div className="modal-header">
             {title && <h2 className="modal-title" id="modal-title">{title}</h2>}
@@ -151,6 +158,7 @@ const Modal = ({
               className="modal-close-btn" 
               onClick={onClose}
               aria-label="Close"
+              type="button"
             >
               ✕
             </button>

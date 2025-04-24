@@ -21,10 +21,32 @@ export default function CreateKeyModal({
     onClose()
   }, [onClose])
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(async (e) => {
+    if (e) e.stopPropagation()
     await onCreateKey(newKeyName, keyType, limitMonthlyUsage, monthlyLimit)
     resetForm()
   }, [onCreateKey, newKeyName, keyType, limitMonthlyUsage, monthlyLimit, resetForm])
+
+  const handleKeyNameChange = useCallback((e) => {
+    setNewKeyName(e.target.value)
+  }, [])
+
+  const handleKeyTypeChange = useCallback((type) => {
+    setKeyType(type)
+  }, [])
+
+  const handleLimitChange = useCallback((e) => {
+    setLimitMonthlyUsage(e.target.checked)
+  }, [])
+
+  const handleMonthlyLimitChange = useCallback((e) => {
+    setMonthlyLimit(Number(e.target.value))
+  }, [])
+
+  const handleCancel = useCallback((e) => {
+    if (e) e.stopPropagation()
+    resetForm()
+  }, [resetForm])
 
   return (
     <Modal
@@ -47,7 +69,7 @@ export default function CreateKeyModal({
             style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '999px', outline: 'none' }}
             placeholder="Key Name"
             value={newKeyName}
-            onChange={(e) => setNewKeyName(e.target.value)}
+            onChange={handleKeyNameChange}
           />
         </div>
 
@@ -66,7 +88,7 @@ export default function CreateKeyModal({
               alignItems: 'center',
               cursor: 'pointer'
             }}
-            onClick={() => setKeyType('production')}
+            onClick={() => handleKeyTypeChange('production')}
           >
             <div style={{ marginRight: '8px', color: '#2dd4bf' }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -89,7 +111,7 @@ export default function CreateKeyModal({
               alignItems: 'center',
               cursor: 'pointer'
             }}
-            onClick={() => setKeyType('development')}
+            onClick={() => handleKeyTypeChange('development')}
           >
             <div style={{ marginRight: '8px' }}>
               <div style={{ 
@@ -118,7 +140,7 @@ export default function CreateKeyModal({
               type="checkbox"
               style={{ marginRight: '8px' }}
               checked={limitMonthlyUsage}
-              onChange={(e) => setLimitMonthlyUsage(e.target.checked)}
+              onChange={handleLimitChange}
             />
             <label htmlFor="limitUsage" style={{ fontSize: '14px' }}>
               Limit monthly usage*
@@ -130,7 +152,7 @@ export default function CreateKeyModal({
               style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '8px', marginTop: '8px' }}
               placeholder="1000"
               value={monthlyLimit}
-              onChange={(e) => setMonthlyLimit(Number(e.target.value))}
+              onChange={handleMonthlyLimitChange}
             />
           )}
         </div>
@@ -149,9 +171,12 @@ export default function CreateKeyModal({
             border: 'none', 
             borderRadius: '999px', 
             fontWeight: 'normal',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1010
           }}
           onClick={handleSubmit}
+          type="button"
         >
           Create
         </button>
@@ -162,9 +187,12 @@ export default function CreateKeyModal({
             padding: '8px', 
             border: 'none', 
             fontWeight: 'normal',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1010
           }}
-          onClick={resetForm}
+          onClick={handleCancel}
+          type="button"
         >
           Cancel
         </button>

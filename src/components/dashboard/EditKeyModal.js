@@ -22,11 +22,21 @@ export default function EditKeyModal({
     onClose()
   }, [onClose])
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(async (e) => {
+    if (e) e.stopPropagation()
     if (!keyData?.id) return
     await onSaveEdit(keyData.id, keyName)
     resetForm()
   }, [keyData, keyName, onSaveEdit, resetForm])
+
+  const handleKeyNameChange = useCallback((e) => {
+    setKeyName(e.target.value)
+  }, [])
+
+  const handleCancel = useCallback((e) => {
+    if (e) e.stopPropagation()
+    resetForm()
+  }, [resetForm])
 
   return (
     <Modal
@@ -49,7 +59,7 @@ export default function EditKeyModal({
             style={{ width: '100%', padding: '12px', border: '1px solid #d1d5db', borderRadius: '999px', outline: 'none' }}
             placeholder="Key Name"
             value={keyName}
-            onChange={(e) => setKeyName(e.target.value)}
+            onChange={handleKeyNameChange}
           />
         </div>
       </div>
@@ -63,9 +73,12 @@ export default function EditKeyModal({
             border: 'none', 
             borderRadius: '999px', 
             fontWeight: 'normal',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1010
           }}
           onClick={handleSubmit}
+          type="button"
         >
           Save
         </button>
@@ -76,9 +89,12 @@ export default function EditKeyModal({
             padding: '8px', 
             border: 'none', 
             fontWeight: 'normal',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1010
           }}
-          onClick={resetForm}
+          onClick={handleCancel}
+          type="button"
         >
           Cancel
         </button>

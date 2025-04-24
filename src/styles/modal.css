@@ -25,6 +25,9 @@
   box-shadow: var(--shadow-lg);
   transform-origin: center;
   border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1001;
+  pointer-events: auto;
 }
 
 /* Size variations */
@@ -276,4 +279,11 @@
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
+}
+
+/* Ensure buttons within modal are clickable */
+.modal-container button {
+  position: relative;
+  z-index: 1002;
+  pointer-events: auto;
 } 

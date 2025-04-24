@@ -5,6 +5,13 @@ import LoginButton from "@/components/LoginButton";
 // Import specific CSS module
 import styles from "./page.module.css";
 
+// Import local SVGs
+import NextJSLogo from '../../public/next.svg';
+import VercelLogo from '../../public/vercel.svg';
+import FileSVG from '../../public/file.svg';
+import WindowSVG from '../../public/window.svg';
+import GlobeSVG from '../../public/globe.svg';
+
 export default function Home() {
   // Create absolute URL based on NEXTAUTH_URL or fallback to localhost
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
@@ -22,7 +29,7 @@ export default function Home() {
           <div className="mb-12">
             <Image
               className="dark"
-              src={`${baseUrl}/next.svg`}
+              src={NextJSLogo}
               alt="Next.js logo"
               width={300}
               height={100}
@@ -51,7 +58,7 @@ export default function Home() {
               className={styles.primaryButton}
             >
               <Image
-                src={`${baseUrl}/vercel.svg`}
+                src={VercelLogo}
                 alt="Vercel Logo"
                 width={16}
                 height={16}
@@ -63,7 +70,7 @@ export default function Home() {
             <Link
               href="/dashboards"
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
-              style={{ backgroundColor: '#0070f3' }}
+              style={{ backgroundColor: 'lightgreen' }}
             >
               API Dashboard
             </Link>
@@ -89,7 +96,7 @@ export default function Home() {
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
               <Image 
-                src={`${baseUrl}/file.svg`}
+                src={FileSVG}
                 alt="Learn icon" 
                 width={16} 
                 height={16} 
@@ -105,7 +112,7 @@ export default function Home() {
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
               <Image 
-                src={`${baseUrl}/window.svg`}
+                src={WindowSVG}
                 alt="Templates icon" 
                 width={16} 
                 height={16} 
@@ -121,7 +128,7 @@ export default function Home() {
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
               <Image 
-                src={`${baseUrl}/globe.svg`}
+                src={GlobeSVG}
                 alt="Next.js icon" 
                 width={16} 
                 height={16} 
