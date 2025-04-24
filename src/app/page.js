@@ -20,7 +20,7 @@ export default function Home() {
         <main className="py-16 flex flex-col items-center">
           {/* Next.js Logo */}
           <div className="mb-12">
-            <img
+            <Image
               className="dark"
               src={`${baseUrl}/next.svg`}
               alt="Next.js logo"
@@ -50,7 +50,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className={styles.primaryButton}
             >
-              <img
+              <Image
                 src={`${baseUrl}/vercel.svg`}
                 alt="Vercel Logo"
                 width={16}
@@ -88,7 +88,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <img 
+              <Image 
                 src={`${baseUrl}/file.svg`}
                 alt="Learn icon" 
                 width={16} 
@@ -104,7 +104,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <img 
+              <Image 
                 src={`${baseUrl}/window.svg`}
                 alt="Templates icon" 
                 width={16} 
@@ -120,7 +120,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <img 
+              <Image 
                 src={`${baseUrl}/globe.svg`}
                 alt="Next.js icon" 
                 width={16} 
