@@ -37,7 +37,24 @@ export default function Sidebar() {
   }
 
   const handleLogout = () => {
-    signOut({ callbackUrl: '/' })
+    signOut({ 
+      callbackUrl: '/',
+      redirect: true,
+    })
+    
+    // Try to also logout from Google session by redirecting to Google logout URL
+    try {
+      // Clear all local storage items
+      localStorage.clear()
+      
+      // Set a flag to indicate that we want a fresh login next time
+      sessionStorage.setItem('forceLogin', 'true')
+      
+      // Optional: you could also attempt to directly logout from Google
+      // window.open('https://accounts.google.com/logout', '_blank')
+    } catch (error) {
+      console.error('Error during logout cleanup:', error)
+    }
   }
 
   const menuItems = [

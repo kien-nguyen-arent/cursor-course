@@ -6,13 +6,20 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || 'placeholder-client-id',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-client-secret',
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/',
+    signIn: '/auth/signin',
     signOut: '/',
-    error: '/',
+    error: '/auth/error',
   },
   callbacks: {
     async jwt({ token, account }) {
@@ -27,6 +34,10 @@ const handler = NextAuth({
       session.accessToken = token.accessToken
       return session
     },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   debug: process.env.NODE_ENV === 'development',
 })
