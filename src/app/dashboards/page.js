@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 // Components
 import Sidebar from "@/components/Sidebar";
@@ -17,6 +19,7 @@ import useApiKeys from "@/hooks/useApiKeys";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   
   // Theme state
   const [darkMode, setDarkMode] = useState(false);
@@ -211,9 +214,21 @@ export default function DashboardPage() {
               <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
                 Pages / Overview
               </div>
-              <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Overview</h1>
+              <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Welcome, {session?.user?.name || 'User'}</h1>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {session?.user?.image && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || 'User'}
+                    width={32}
+                    height={32}
+                    style={{ borderRadius: '50%' }}
+                  />
+                  <span style={{ fontSize: '14px', color: '#4b5563' }}>{session.user.email}</span>
+                </div>
+              )}
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
