@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useCallback } from 'react'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
@@ -9,7 +9,7 @@ function SignOutContent() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
       setIsLoading(true)
       await signOut({ redirect: false })
@@ -19,7 +19,7 @@ function SignOutContent() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [router, setIsLoading])
 
   useEffect(() => {
     // Auto sign out after 3 seconds if user doesn't click the button
@@ -28,7 +28,7 @@ function SignOutContent() {
     }, 3000)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [handleSignOut])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

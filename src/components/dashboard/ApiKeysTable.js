@@ -77,7 +77,7 @@ export default function ApiKeysTable({
   return (
     <div>
       <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '15px' }}>
-        API keys are used to authenticate your requests. Keep your keys secure - don't share them in public areas.
+        API keys are used to authenticate your requests. Keep your keys secure - don&apos;t share them in public areas.
       </p>
 
       {error && (
