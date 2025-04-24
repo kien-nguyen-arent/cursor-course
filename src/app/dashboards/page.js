@@ -54,120 +54,192 @@ function DashboardContent() {
   
   // Check for dark mode and sidebar state on component mount
   useEffect(() => {
-    // Check for saved dark mode preference
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    setDarkMode(savedDarkMode);
-    
-    // Apply dark mode class to body
-    if (savedDarkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-    
-    // Check sidebar state
-    const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
-    setIsSidebarCollapsed(savedSidebarState);
-    
-    // Add event listener for sidebar changes
-    const handleSidebarChange = () => {
-      const currentState = localStorage.getItem('sidebarCollapsed') === 'true';
-      setIsSidebarCollapsed(currentState);
-    };
-    
-    window.addEventListener('storage', handleSidebarChange);
-    
-    // Fetch API keys
-    fetchApiKeys();
-    
-    return () => {
-      window.removeEventListener('storage', handleSidebarChange);
-    };
-  }, [fetchApiKeys]);
-  
-  // Handle dark mode toggle
-  const toggleDarkMode = useCallback(() => {
-    setDarkMode(prevMode => {
-      const newMode = !prevMode;
-      localStorage.setItem('darkMode', newMode.toString());
+    try {
+      // Check for saved dark mode preference
+      const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+      setDarkMode(savedDarkMode);
       
-      if (newMode) {
+      // Apply dark mode class to body
+      if (savedDarkMode) {
         document.body.classList.add('dark-mode');
       } else {
         document.body.classList.remove('dark-mode');
       }
       
-      return newMode;
-    });
+      // Check sidebar state
+      const savedSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
+      setIsSidebarCollapsed(savedSidebarState);
+      
+      // Add event listener for sidebar changes
+      const handleSidebarChange = () => {
+        const currentState = localStorage.getItem('sidebarCollapsed') === 'true';
+        setIsSidebarCollapsed(currentState);
+      };
+      
+      window.addEventListener('storage', handleSidebarChange);
+      
+      // Fetch API keys
+      fetchApiKeys();
+      
+      return () => {
+        window.removeEventListener('storage', handleSidebarChange);
+      };
+    } catch (error) {
+      console.error('Error in useEffect:', error);
+    }
+  }, [fetchApiKeys]);
+  
+  // Handle dark mode toggle
+  const toggleDarkMode = useCallback(() => {
+    try {
+      setDarkMode(prevMode => {
+        const newMode = !prevMode;
+        localStorage.setItem('darkMode', newMode.toString());
+        
+        if (newMode) {
+          document.body.classList.add('dark-mode');
+        } else {
+          document.body.classList.remove('dark-mode');
+        }
+        
+        return newMode;
+      });
+    } catch (error) {
+      console.error('Error toggling dark mode:', error);
+    }
   }, []);
   
-  // Handle API Key actions
+  // Handle function wrapper to catch errors
+  const safeHandler = useCallback((handler) => {
+    return (...args) => {
+      try {
+        return handler(...args);
+      } catch (error) {
+        console.error('Error in handler:', error);
+        setNotification({
+          visible: true,
+          message: 'An error occurred during operation',
+          type: 'error'
+        });
+      }
+    };
+  }, []);
+  
+  // Handle API Key actions - wrapped with safeHandler
   const handleCreateKey = useCallback(async (name, type, limitUsage, limit) => {
-    const result = await createApiKey(name, type, limitUsage, limit);
-    
-    if (result.success) {
+    try {
+      const result = await createApiKey(name, type, limitUsage, limit);
+      
+      if (result.success) {
+        setNotification({
+          visible: true,
+          message: 'API key created successfully',
+          type: 'success'
+        });
+      } else {
+        setNotification({
+          visible: true,
+          message: `Failed to create API key: ${result.error || 'Unknown error'}`,
+          type: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Create key error:', error);
       setNotification({
         visible: true,
-        message: 'API key created successfully',
-        type: 'success'
-      });
-    } else {
-      setNotification({
-        visible: true,
-        message: `Failed to create API key: ${result.error}`,
+        message: 'An error occurred while creating the API key',
         type: 'error'
       });
     }
   }, [createApiKey]);
   
   const handleEditKey = useCallback((key) => {
-    setEditKey(key);
-    setIsEditModalOpen(true);
+    try {
+      if (key) {
+        setEditKey(key);
+        setIsEditModalOpen(true);
+      }
+    } catch (error) {
+      console.error('Edit key error:', error);
+    }
   }, []);
   
   const handleSaveEdit = useCallback(async (id, name) => {
-    const result = await updateApiKey(id, name);
-    
-    if (result.success) {
+    try {
+      if (!id) return;
+      
+      const result = await updateApiKey(id, name);
+      
+      if (result.success) {
+        setNotification({
+          visible: true,
+          message: 'API key updated successfully',
+          type: 'success'
+        });
+      } else {
+        setNotification({
+          visible: true,
+          message: `Failed to update API key: ${result.error || 'Unknown error'}`,
+          type: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Save edit error:', error);
       setNotification({
         visible: true,
-        message: 'API key updated successfully',
-        type: 'success'
-      });
-    } else {
-      setNotification({
-        visible: true,
-        message: `Failed to update API key: ${result.error}`,
+        message: 'An error occurred while updating the API key',
         type: 'error'
       });
     }
   }, [updateApiKey]);
   
   const handleDeleteKey = useCallback(async (id) => {
-    const result = await deleteApiKey(id);
-    
-    if (result.success) {
+    try {
+      if (!id) return;
+      
+      const result = await deleteApiKey(id);
+      
+      if (result.success) {
+        setNotification({
+          visible: true,
+          message: 'API key deleted successfully',
+          type: 'error' // Using error type for red color
+        });
+      } else {
+        setNotification({
+          visible: true,
+          message: `Failed to delete API key: ${result.error || 'Unknown error'}`,
+          type: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Delete key error:', error);
       setNotification({
         visible: true,
-        message: 'API key deleted successfully',
-        type: 'error' // Using error type for red color
-      });
-    } else {
-      setNotification({
-        visible: true,
-        message: `Failed to delete API key: ${result.error}`,
+        message: 'An error occurred while deleting the API key',
         type: 'error'
       });
     }
   }, [deleteApiKey]);
   
   const handleCopyKey = useCallback((key) => {
-    navigator.clipboard.writeText(key);
-    setNotification({
-      visible: true,
-      message: 'Copied API Key to clipboard',
-      type: 'success'
-    });
+    try {
+      if (!key) return;
+      
+      navigator.clipboard.writeText(key);
+      setNotification({
+        visible: true,
+        message: 'Copied API Key to clipboard',
+        type: 'success'
+      });
+    } catch (error) {
+      console.error('Copy key error:', error);
+      setNotification({
+        visible: true,
+        message: 'Failed to copy API key to clipboard',
+        type: 'error'
+      });
+    }
   }, []);
   
   const closeNotification = useCallback(() => {
@@ -295,17 +367,17 @@ function DashboardContent() {
           </div>
 
           <ApiKeysTable 
-            apiKeys={apiKeys}
+            apiKeys={apiKeys || []}
             isLoading={isLoading}
             error={error}
-            visibleKeys={visibleKeys}
+            visibleKeys={visibleKeys || {}}
             onCopyKey={handleCopyKey}
             onDeleteKey={handleDeleteKey}
-            onViewKey={toggleKeyVisibility}
+            onViewKey={toggleKeyVisibility || (() => {})}
             onEditKey={handleEditKey}
             formatDate={formatDate}
             formatTime={formatTime}
-            getDisplayKey={getDisplayKey}
+            getDisplayKey={getDisplayKey || ((key) => key ? `${key.substring(0, 3)}...${key.substring(key.length - 3)}` : '')}
           />
         </div>
 

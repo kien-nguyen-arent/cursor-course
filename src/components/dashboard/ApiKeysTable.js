@@ -14,13 +14,67 @@ export default function ApiKeysTable({
   isLoading = false,
   error = null,
   visibleKeys = {},
-  getDisplayKey,
-  onToggleVisibility,
+  getDisplayKey = (key) => key ? `${key.substring(0, 3)}...${key.substring(key.length - 3)}` : '',
+  onViewKey,
   onCopyKey,
   onEditKey,
   onDeleteKey,
-  onCreateKey
+  formatDate,
+  formatTime
 }) {
+  // Safe function wrappers to prevent errors
+  const handleViewKey = (key) => {
+    try {
+      if (onViewKey && typeof onViewKey === 'function') {
+        onViewKey(key);
+      }
+    } catch (error) {
+      console.error('Error in view key handler:', error);
+    }
+  };
+
+  const handleCopyKey = (key) => {
+    try {
+      if (onCopyKey && typeof onCopyKey === 'function' && key) {
+        onCopyKey(key);
+      }
+    } catch (error) {
+      console.error('Error in copy key handler:', error);
+    }
+  };
+
+  const handleEditKey = (key) => {
+    try {
+      if (onEditKey && typeof onEditKey === 'function' && key) {
+        onEditKey(key);
+      }
+    } catch (error) {
+      console.error('Error in edit key handler:', error);
+    }
+  };
+
+  const handleDeleteKey = (id) => {
+    try {
+      if (onDeleteKey && typeof onDeleteKey === 'function' && id) {
+        onDeleteKey(id);
+      }
+    } catch (error) {
+      console.error('Error in delete key handler:', error);
+    }
+  };
+
+  const safeGetDisplayKey = (key, id) => {
+    try {
+      if (getDisplayKey && typeof getDisplayKey === 'function') {
+        return getDisplayKey(key, id);
+      }
+      return key ? `${key.substring(0, 3)}...${key.substring(key.length - 3)}` : '';
+    } catch (error) {
+      console.error('Error in getDisplayKey:', error);
+      return key ? `${key.substring(0, 3)}...${key.substring(key.length - 3)}` : '';
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
@@ -71,36 +125,36 @@ export default function ApiKeysTable({
                     <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280' }}>{key.type}</td>
                     <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280' }}>{key.usage}</td>
                     <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280', fontFamily: 'monospace' }}>
-                      {getDisplayKey(key.key, key.id)}
+                      {safeGetDisplayKey(key.key, key.id)}
                     </td>
                     <td style={{ padding: '12px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                         <button
-                          onClick={() => onToggleVisibility(key)}
+                          onClick={() => handleViewKey(key)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}
-                          aria-label={visibleKeys[key.id] ? "Hide API key" : "View API key"}
+                          aria-label={(visibleKeys && visibleKeys[key.id]) ? "Hide API key" : "View API key"}
                         >
-                          {visibleKeys[key.id] ? 
+                          {(visibleKeys && visibleKeys[key.id]) ? 
                             <EyeSlashIcon style={{ width: '20px', height: '20px' }} /> : 
                             <EyeIcon style={{ width: '20px', height: '20px' }} />
                           }
                         </button>
                         <button
-                          onClick={() => onCopyKey(key.key)}
+                          onClick={() => handleCopyKey(key.key)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}
                           aria-label="Copy API key"
                         >
                           <ClipboardIcon style={{ width: '20px', height: '20px' }} />
                         </button>
                         <button
-                          onClick={() => onEditKey(key)}
+                          onClick={() => handleEditKey(key)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}
                           aria-label="Edit API key"
                         >
                           <PencilIcon style={{ width: '20px', height: '20px' }} />
                         </button>
                         <button
-                          onClick={() => onDeleteKey(key.id)}
+                          onClick={() => handleDeleteKey(key.id)}
                           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}
                           aria-label="Delete API key"
                         >
