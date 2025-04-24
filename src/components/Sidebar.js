@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 import { 
   HomeIcon, 
   CodeBracketIcon, 
@@ -12,7 +13,8 @@ import {
   ArrowTopRightOnSquareIcon,
   Bars3Icon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 export default function Sidebar() {
@@ -34,6 +36,10 @@ export default function Sidebar() {
     localStorage.setItem('sidebarCollapsed', newState.toString())
   }
 
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/' })
+  }
+
   const menuItems = [
     { name: 'Overview', href: '/dashboards', icon: HomeIcon, active: true },
     { name: 'API Playground', href: '/playground', icon: CodeBracketIcon },
@@ -50,6 +56,11 @@ export default function Sidebar() {
       href: '/documentation', 
       icon: DocumentTextIcon, 
       external: true 
+    },
+    {
+      name: 'Logout',
+      icon: ArrowLeftOnRectangleIcon,
+      onClick: handleLogout
     }
   ]
 
@@ -181,19 +192,22 @@ export default function Sidebar() {
         }}>
           {menuItems.map((item) => (
             <li key={item.name}>
-              <Link href={item.href}>
-                <div style={{ 
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: isCollapsed ? 'center' : 'space-between',
-                  padding: isCollapsed ? '16px 0' : '12px 20px',
-                  color: item.active ? '#4f46e5' : '#6b7280',
-                  background: item.active ? '#f3f4f6' : 'transparent',
-                  borderLeft: item.active ? '3px solid #4f46e5' : '3px solid transparent',
-                  transition: 'all 0.2s',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap'
-                }}>
+              {item.onClick ? (
+                <div 
+                  onClick={item.onClick}
+                  style={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: isCollapsed ? 'center' : 'space-between',
+                    padding: isCollapsed ? '16px 0' : '12px 20px',
+                    color: item.active ? '#4f46e5' : '#6b7280',
+                    background: item.active ? '#f3f4f6' : 'transparent',
+                    borderLeft: item.active ? '3px solid #4f46e5' : '3px solid transparent',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -211,7 +225,39 @@ export default function Sidebar() {
                     <ArrowTopRightOnSquareIcon style={{ width: '16px', height: '16px' }} />
                   )}
                 </div>
-              </Link>
+              ) : (
+                <Link href={item.href}>
+                  <div style={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: isCollapsed ? 'center' : 'space-between',
+                    padding: isCollapsed ? '16px 0' : '12px 20px',
+                    color: item.active ? '#4f46e5' : '#6b7280',
+                    background: item.active ? '#f3f4f6' : 'transparent',
+                    borderLeft: item.active ? '3px solid #4f46e5' : '3px solid transparent',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '10px',
+                      justifyContent: isCollapsed ? 'center' : 'flex-start',
+                      width: isCollapsed ? '100%' : 'auto'
+                    }}>
+                      <item.icon style={{ width: '20px', height: '20px' }} />
+                      {!isCollapsed && <span>{item.name}</span>}
+                    </div>
+                    {!isCollapsed && item.hasDropdown && (
+                      <ChevronDownIcon style={{ width: '16px', height: '16px' }} />
+                    )}
+                    {!isCollapsed && item.external && (
+                      <ArrowTopRightOnSquareIcon style={{ width: '16px', height: '16px' }} />
+                    )}
+                  </div>
+                </Link>
+              )}
             </li>
           ))}
         </ul>

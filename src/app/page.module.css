@@ -1,0 +1,110 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Button styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.primaryButton {
+  composes: button;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background-color: #0060df;
+}
+
+.secondaryButton {
+  composes: button;
+  background-color: transparent;
+  border: 1px solid #e5e7eb;
+}
+
+.secondaryButton:hover {
+  background-color: #f3f4f6;
+}
+
+/* Header and Navigation */
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 2rem 0;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Dark mode adjustments */
+:global(.dark-mode) .secondaryButton {
+  border-color: #2d2d2d;
+}
+
+:global(.dark-mode) .secondaryButton:hover {
+  background-color: #2d2d2d;
+}
+
+:global(.dark-mode) .footer {
+  border-color: #2d2d2d;
+}
+
+/* Authentication section */
+.auth {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+  
+  .auth {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+} 
