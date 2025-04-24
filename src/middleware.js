@@ -8,7 +8,19 @@ export async function middleware(request) {
   const isAuth = await getToken({ req: request })
   const isAuthPage = pathname.startsWith('/auth')
   const isApiRoute = pathname.startsWith('/api')
-  const isPublicRoute = pathname === '/' || isApiRoute || pathname.startsWith('/_next')
+  
+  // Check for static files and public assets
+  const isStaticFile = 
+    pathname.startsWith('/_next') || 
+    pathname.endsWith('.svg') || 
+    pathname.endsWith('.png') || 
+    pathname.endsWith('.jpg') || 
+    pathname.endsWith('.jpeg') || 
+    pathname.endsWith('.ico') || 
+    pathname.endsWith('.css') || 
+    pathname.endsWith('.js')
+  
+  const isPublicRoute = pathname === '/' || isApiRoute || isStaticFile
 
   // Redirect authenticated users away from auth pages
   if (isAuthPage && isAuth) {
@@ -28,6 +40,6 @@ export async function middleware(request) {
 // See "Matching Paths" below to learn more
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)'
+    '/((?!_next/static|_next/image|favicon.ico).*)'
   ],
 } 

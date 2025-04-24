@@ -6,6 +6,9 @@ import LoginButton from "@/components/LoginButton";
 import styles from "./page.module.css";
 
 export default function Home() {
+  // Create absolute URL based on NEXTAUTH_URL or fallback to localhost
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  
   return (
     <div className={`${styles.main} bg-white dark:bg-gray-900`}>
       {/* Google Sign In button - fixed position */}
@@ -17,13 +20,12 @@ export default function Home() {
         <main className="py-16 flex flex-col items-center">
           {/* Next.js Logo */}
           <div className="mb-12">
-            <Image
-              className="dark:invert"
-              src="/nextjs-logo.svg"
+            <img
+              className="dark"
+              src={`${baseUrl}/next.svg`}
               alt="Next.js logo"
-              width={180}
-              height={37}
-              priority
+              width={300}
+              height={100}
             />
           </div>
           
@@ -48,8 +50,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className={styles.primaryButton}
             >
-              <Image
-                src="/vercel.svg"
+              <img
+                src={`${baseUrl}/vercel.svg`}
                 alt="Vercel Logo"
                 width={16}
                 height={16}
@@ -85,8 +87,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <Image 
-                src="/file.svg" 
+              <img 
+                src={`${baseUrl}/file.svg`}
                 alt="Learn icon" 
                 width={16} 
                 height={16} 
@@ -101,8 +103,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <Image 
-                src="/window.svg" 
+              <img 
+                src={`${baseUrl}/window.svg`}
                 alt="Templates icon" 
                 width={16} 
                 height={16} 
@@ -117,8 +119,8 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center hover:text-gray-900 dark:hover:text-gray-100"
             >
-              <Image 
-                src="/globe.svg" 
+              <img 
+                src={`${baseUrl}/globe.svg`}
                 alt="Next.js icon" 
                 width={16} 
                 height={16} 

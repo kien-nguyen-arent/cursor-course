@@ -8,6 +8,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-client-secret',
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/',
     signOut: '/',
@@ -27,6 +28,7 @@ const handler = NextAuth({
       return session
     },
   },
+  debug: process.env.NODE_ENV === 'development',
 })
 
 export { handler as GET, handler as POST } 
