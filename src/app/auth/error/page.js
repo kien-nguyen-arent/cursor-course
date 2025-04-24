@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
 const getErrorMessage = (error) => {
   switch (error) {
@@ -27,7 +27,8 @@ const getErrorMessage = (error) => {
   }
 }
 
-export default function ErrorPage() {
+// Separate client component that uses useSearchParams
+function ErrorContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState('')
@@ -64,5 +65,20 @@ export default function ErrorPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function ErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Loading...</h2>
+        </div>
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   )
 } 
