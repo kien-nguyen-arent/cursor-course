@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import Notification from '@/components/Notification'
 
-export default function PlaygroundPage() {
+// Separate client component that uses useRouter
+function PlaygroundContent() {
   const router = useRouter()
   const [apiKey, setApiKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -143,5 +144,18 @@ export default function PlaygroundPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function PlaygroundPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Loading...</p>
+      </div>
+    }>
+      <PlaygroundContent />
+    </Suspense>
   )
 } 

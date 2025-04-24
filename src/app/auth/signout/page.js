@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-export default function SignOut() {
+// Separate client component that uses useRouter
+function SignOutContent() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -45,5 +46,20 @@ export default function SignOut() {
         </button>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function SignOut() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Loading...</h2>
+        </div>
+      </div>
+    }>
+      <SignOutContent />
+    </Suspense>
   )
 } 

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import Notification from '@/components/Notification'
 
-export default function ProtectedPage() {
+// Separate client component that uses useRouter
+function ProtectedContent() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [isValidKey, setIsValidKey] = useState(false)
@@ -181,5 +182,18 @@ export default function ProtectedPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function ProtectedPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Loading...</p>
+      </div>
+    }>
+      <ProtectedContent />
+    </Suspense>
   )
 } 

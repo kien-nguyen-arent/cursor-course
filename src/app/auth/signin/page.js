@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function SignIn() {
+// Separate client component that uses useSearchParams
+function SignInContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboards'
@@ -75,8 +76,8 @@ export default function SignIn() {
             disabled={isLoading}
             className="w-full bg-white py-4 px-6 rounded-lg border border-gray-300 shadow-sm text-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex flex-col items-center"
           >
-            {/* Google logo as 100x100 SVG */}
-            <svg className="h-[100px] w-[100px] mb-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            {/* Google logo as 32x32 SVG */}
+            <svg className="h-[32px] w-[32px] mb-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -100,5 +101,20 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Loading...</h2>
+        </div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   )
 } 

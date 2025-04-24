@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
@@ -17,7 +17,8 @@ import EditKeyModal from "@/components/dashboard/EditKeyModal";
 // Hooks
 import useApiKeys from "@/hooks/useApiKeys";
 
-export default function DashboardPage() {
+// Separate client component that uses useRouter
+function DashboardContent() {
   const router = useRouter();
   const { data: session } = useSession();
   
@@ -204,97 +205,137 @@ export default function DashboardPage() {
 
       <div style={{ 
         flex: '1', 
-        marginLeft: isSidebarCollapsed ? '80px' : '280px',
+        marginLeft: isSidebarCollapsed ? '80px' : '280px', 
         padding: '20px',
         transition: 'margin-left 0.3s ease-in-out'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', background: 'white', borderRadius: '10px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <header style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>
-                Pages / Overview
-              </div>
-              <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Welcome, {session?.user?.name || 'User'}</h1>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {session?.user?.image && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Image
-                    src={session.user.image}
-                    alt={session.user.name || 'User'}
-                    width={32}
-                    height={32}
-                    style={{ borderRadius: '50%' }}
-                  />
-                  <span style={{ fontSize: '14px', color: '#4b5563' }}>{session.user.email}</span>
-                </div>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>Dashboard</h1>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              onClick={toggleDarkMode}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                color: '#6b7280'
+              }}
+            >
+              {darkMode ? (
+                <SunIcon style={{ width: '20px', height: '20px' }} />
+              ) : (
+                <MoonIcon style={{ width: '20px', height: '20px' }} />
               )}
+            </button>
+            
+            {session?.user?.image ? (
+              <Image
+                src={session.user.image}
+                alt={session.user.name || 'User'}
+                width={40}
+                height={40}
+                style={{ borderRadius: '50%' }}
+              />
+            ) : (
               <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '6px', 
-                color: '#10b981', 
-                background: 'rgba(16, 185, 129, 0.1)', 
-                padding: '6px 10px', 
-                borderRadius: '999px', 
-                fontSize: '14px' 
+                width: '40px', 
+                height: '40px', 
+                borderRadius: '50%', 
+                background: '#4361EE',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold'
               }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></div>
-                Operational
+                {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : 'U'}
               </div>
-              <button 
-                onClick={toggleDarkMode} 
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              >
-                {darkMode ? 
-                  <SunIcon style={{ width: '20px', height: '20px' }} /> : 
-                  <MoonIcon style={{ width: '20px', height: '20px' }} />
-                }
-              </button>
-            </div>
-          </header>
-
-          {/* Plan Card */}
-          <div style={{ marginBottom: '30px' }}>
-            <PlanCard 
-              planName="Researcher"
-              usage={0}
-              limit={1000}
-            />
-          </div>
-
-          {/* API Keys Section */}
-          <div style={{ marginBottom: '30px' }}>
-            <ApiKeysTable 
-              apiKeys={apiKeys}
-              isLoading={isLoading}
-              error={error}
-              visibleKeys={visibleKeys}
-              getDisplayKey={getDisplayKey}
-              onToggleVisibility={toggleKeyVisibility}
-              onCopyKey={handleCopyKey}
-              onEditKey={handleEditKey}
-              onDeleteKey={handleDeleteKey}
-              onCreateKey={() => setIsCreateModalOpen(true)}
-            />
+            )}
           </div>
         </div>
+
+        {/* Plan Info Card */}
+        <div style={{ marginBottom: '32px' }}>
+          <PlanCard />
+        </div>
+
+        {/* API Keys Section */}
+        <div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '16px'
+          }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>API Keys</h2>
+            
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              style={{ 
+                background: '#4361EE', 
+                color: 'white', 
+                padding: '8px 16px', 
+                border: 'none', 
+                borderRadius: '6px', 
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer'
+              }}
+            >
+              Create new API key
+            </button>
+          </div>
+
+          <ApiKeysTable 
+            apiKeys={apiKeys}
+            isLoading={isLoading}
+            error={error}
+            visibleKeys={visibleKeys}
+            onCopyKey={handleCopyKey}
+            onDeleteKey={handleDeleteKey}
+            onViewKey={toggleKeyVisibility}
+            onEditKey={handleEditKey}
+            formatDate={formatDate}
+            formatTime={formatTime}
+            getDisplayKey={getDisplayKey}
+          />
+        </div>
+
+        {/* Modals */}
+        <CreateKeyModal 
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={handleCreateKey}
+        />
+        
+        <EditKeyModal 
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSubmit={handleSaveEdit}
+          apiKey={editKey}
+        />
       </div>
-
-      {/* Modals */}
-      <CreateKeyModal 
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateKey={handleCreateKey}
-      />
-
-      <EditKeyModal 
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        onSaveEdit={handleSaveEdit}
-        keyData={editKey}
-      />
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Loading...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 } 
