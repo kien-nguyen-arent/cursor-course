@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Modal from '@/components/Modal'
 
 export default function CreateKeyModal({
@@ -13,18 +13,18 @@ export default function CreateKeyModal({
   const [limitMonthlyUsage, setLimitMonthlyUsage] = useState(false)
   const [monthlyLimit, setMonthlyLimit] = useState(1000)
 
-  const handleSubmit = async () => {
-    await onCreateKey(newKeyName, keyType, limitMonthlyUsage, monthlyLimit)
-    resetForm()
-  }
-
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setNewKeyName("")
     setKeyType("development")
     setLimitMonthlyUsage(false)
     setMonthlyLimit(1000)
     onClose()
-  }
+  }, [onClose])
+
+  const handleSubmit = useCallback(async () => {
+    await onCreateKey(newKeyName, keyType, limitMonthlyUsage, monthlyLimit)
+    resetForm()
+  }, [onCreateKey, newKeyName, keyType, limitMonthlyUsage, monthlyLimit, resetForm])
 
   return (
     <Modal

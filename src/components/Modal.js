@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 import "../styles/modal.css";
@@ -41,8 +41,8 @@ const Modal = ({
     }
   };
 
-  // Handle keyboard events
-  const handleKeyDown = (e) => {
+  // Handle keyboard events using useCallback
+  const handleKeyDown = useCallback((e) => {
     // Close on escape key press
     if (closeOnEsc && e.key === 'Escape') {
       onClose();
@@ -64,7 +64,7 @@ const Modal = ({
         }
       }
     }
-  };
+  }, [closeOnEsc, onClose]);
 
   // Set up focus trap and key handlers
   useEffect(() => {

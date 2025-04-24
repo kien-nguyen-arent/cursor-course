@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback } from 'react'
 import {
   ClipboardIcon,
   TrashIcon,
@@ -21,8 +22,8 @@ export default function ApiKeysTable({
   formatDate,
   formatTime
 }) {
-  // Safe function wrappers to prevent errors
-  const handleViewKey = (key) => {
+  // Safe function wrappers to prevent errors with useCallback
+  const handleViewKey = useCallback((key) => {
     try {
       if (onViewKey && typeof onViewKey === 'function') {
         onViewKey(key);
@@ -30,9 +31,9 @@ export default function ApiKeysTable({
     } catch (error) {
       console.error('Error in view key handler:', error);
     }
-  };
+  }, [onViewKey]);
 
-  const handleCopyKey = (key) => {
+  const handleCopyKey = useCallback((key) => {
     try {
       if (onCopyKey && typeof onCopyKey === 'function' && key) {
         onCopyKey(key);
@@ -40,9 +41,9 @@ export default function ApiKeysTable({
     } catch (error) {
       console.error('Error in copy key handler:', error);
     }
-  };
+  }, [onCopyKey]);
 
-  const handleEditKey = (key) => {
+  const handleEditKey = useCallback((key) => {
     try {
       if (onEditKey && typeof onEditKey === 'function' && key) {
         onEditKey(key);
@@ -50,9 +51,9 @@ export default function ApiKeysTable({
     } catch (error) {
       console.error('Error in edit key handler:', error);
     }
-  };
+  }, [onEditKey]);
 
-  const handleDeleteKey = (id) => {
+  const handleDeleteKey = useCallback((id) => {
     try {
       if (onDeleteKey && typeof onDeleteKey === 'function' && id) {
         onDeleteKey(id);
@@ -60,9 +61,9 @@ export default function ApiKeysTable({
     } catch (error) {
       console.error('Error in delete key handler:', error);
     }
-  };
+  }, [onDeleteKey]);
 
-  const safeGetDisplayKey = (key, id) => {
+  const safeGetDisplayKey = useCallback((key, id) => {
     try {
       if (getDisplayKey && typeof getDisplayKey === 'function') {
         return getDisplayKey(key, id);
@@ -72,12 +73,12 @@ export default function ApiKeysTable({
       console.error('Error in getDisplayKey:', error);
       return key ? `${key.substring(0, 3)}...${key.substring(key.length - 3)}` : '';
     }
-  };
+  }, [getDisplayKey]);
 
   return (
     <div>
       <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '15px' }}>
-        API keys are used to authenticate your requests. Keep your keys secure - don&apos;t share them in public areas.
+        API keys are used to authenticate your requests. Keep your keys secure - don't share them in public areas.
       </p>
 
       {error && (

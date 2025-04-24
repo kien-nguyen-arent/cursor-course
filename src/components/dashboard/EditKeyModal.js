@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Modal from '@/components/Modal'
 
 export default function EditKeyModal({
@@ -17,16 +17,16 @@ export default function EditKeyModal({
     }
   }, [keyData])
 
-  const handleSubmit = async () => {
+  const resetForm = useCallback(() => {
+    setKeyName("")
+    onClose()
+  }, [onClose])
+
+  const handleSubmit = useCallback(async () => {
     if (!keyData?.id) return
     await onSaveEdit(keyData.id, keyName)
     resetForm()
-  }
-
-  const resetForm = () => {
-    setKeyName("")
-    onClose()
-  }
+  }, [keyData, keyName, onSaveEdit, resetForm])
 
   return (
     <Modal
